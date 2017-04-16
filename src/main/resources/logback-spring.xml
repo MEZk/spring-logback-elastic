@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="log.level" source="log.level"/>
+    <springProperty scope="context" name="elastic.index" source="log.elastic.index"/>
+    <springProperty scope="context" name="elastic.type" source="log.elastic.type"/>
+    <springProperty scope="context" name="elastic.errorLoggerName" source="log.elastic.errorLoggerName"/>
+    <springProperty scope="context" name="elastic.connectTimeout" source="log.elastic.connectTimeout"/>
+    <springProperty scope="context" name="elastic.errorsToStderr" source="log.elastic.errorsToStderr"/>
+    <springProperty scope="context" name="elastic.includeCallerData" source="log.elastic.includeCallerData"/>
+    <springProperty scope="context" name="elastic.logsToStderr" source="log.elastic.logsToStderr"/>
+    <springProperty scope="context" name="elastic.maxQueueSize" source="log.elastic.maxQueueSize"/>
+    <springProperty scope="context" name="elastic.readTimeout" source="log.elastic.readTimeout"/>
+    <springProperty scope="context" name="elastic.sleepTime" source="log.elastic.sleepTime"/>
+    <springProperty scope="context" name="elastic.maxRetries" source="log.elastic.maxRetries"/>
+    <springProperty scope="context" name="elastic.rawJsonMessage" source="log.elastic.rawJsonMessage"/>
+    <springProperty scope="context" name="elastic.includeMdc" source="log.elastic.includeMdc"/>
+    <springProperty scope="context" name="elastic.appender.enabled" source="log.elastic.appender.enable"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="ELASTIC" class="com.internetitem.logback.elasticsearch.ElasticsearchAppender">
+        <url>${elastic.url}</url>
+        <index>${elastic.index}</index>
+        <type>${elastic.type}</type>
+        <errorLoggerName>${elastic.errorLoggerName}</errorLoggerName>
+        <connectTimeout>${elastic.connectTimeout}</connectTimeout>
+        <errorsToStderr>${elastic.errorsToStderr}</errorsToStderr>
+        <includeCallerData>${elastic.includeCallerData}</includeCallerData>
+        <logsToStderr>${elastic.logsToStderr}</logsToStderr>
+        <maxQueueSize>${elastic.maxQueueSize}</maxQueueSize>
+        <maxRetries>${elastic.maxRetries}</maxRetries>
+        <readTimeout>${elastic.readTimeout}</readTimeout>
+        <sleepTime>${elastic.sleepTime}</sleepTime>
+        <rawJsonMessage>${elastic.rawJsonMessage}</rawJsonMessage>
+        <includeMdc>${elastic.includeMdc}</includeMdc>
+        <!--<authentication class="com.internetitem.logback.elasticsearch.config.BasicAuthentication" /> &lt;!&ndash; optional &ndash;&gt;-->
+        <properties>
+            <property>
+                <name>host</name>
+                <value>${HOSTNAME}</value>
+                <allowEmpty>false</allowEmpty>
+            </property>
+            <property>
+                <name>severity</name>
+                <value>%level</value>
+            </property>
+            <property>
+                <name>thread</name>
+                <value>%thread</value>
+            </property>
+            <property>
+                <name>message</name>
+                <value>%msg</value>
+            </property>
+            <property>
+                <name>logger</name>
+                <value>%logger</value>
+            </property>
+            <property>
+                <name>stacktrace</name>
+                <value>%ex{full}</value>
+            </property>
+            <property>
+                <name>application</name>
+                <value>spring-boot-test</value>
+            </property>
+            <!--<property>-->
+                <!--<name>mdc</name>-->
+                <!--<value>%mdc</value>-->
+            <!--</property>-->
+        </properties>
+        <headers>
+            <header>
+                <name>Content-Type</name>
+                <value>text/plain</value>
+            </header>
+        </headers>
+    </appender>
+
+    <root level="${log.level}">
+        <appender-ref ref="STDOUT"/>
+        <if condition="${elastic.appender.enabled}">
+            <then>
+                <appender-ref ref="ELASTIC"/>
+            </then>
+        </if>
+    </root>
+
+</configuration>

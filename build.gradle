@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(
+                'org.springframework.boot:spring-boot-gradle-plugin:1.4.5.RELEASE',
+        )
+    }
+}
+
+group 'spring-boot-test'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.github.mezk.SpringBootApp'
+    }
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
+
+    // LOGS
+    runtime group: 'com.internetitem', name: 'logback-elasticsearch-appender', version: '1.5'
+    runtime group: 'org.codehaus.janino', name: 'janino', version: '3.0.7'
+}
